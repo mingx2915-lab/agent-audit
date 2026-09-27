@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/png" href="/src/assets/agent-audit-mark.png" />
+    <title>知盾 AgentAudit 正在启动</title>
+  </head>
+  <body>
+    <main class="splash" aria-live="polite">
+      <div class="splash-artwork" aria-hidden="true">
+        <img id="splash-workspace" alt="" width="1440" height="880" />
+      </div>
+      <div class="splash-brand">
+        <img id="splash-mark" class="splash-mark" alt="" />
+        <div>
+          <p class="splash-name">知盾 <span>AgentAudit</span></p>
+          <p class="splash-subtitle">企业知识助手业务权限安全验收</p>
+        </div>
+      </div>
+      <section class="splash-status" aria-labelledby="startup-status">
+        <div class="startup-track" aria-hidden="true">
+          <span class="track-contract"></span>
+          <span class="track-trace"></span>
+          <span class="track-finding"></span>
+          <span class="track-replay"></span>
+        </div>
+        <p id="startup-status" class="startup-status">正在准备本地运行环境</p>
+        <p id="startup-detail" class="startup-detail">所有 Workspace 与审计数据均保留在本机</p>
+        <div id="startup-guidance" class="startup-guidance" hidden>
+          <p id="startup-impact" class="startup-impact"></p>
+          <p id="startup-recovery" class="startup-recovery"></p>
+          <details id="startup-technical" class="startup-technical">
+            <summary>查看技术详情</summary>
+            <pre id="startup-technical-message"></pre>
+          </details>
+        </div>
+        <button id="startup-exit" class="startup-exit" type="button" hidden>退出应用</button>
+      </section>
+      <footer>LOCAL PROCESSING · NO CLOUD UPLOAD</footer>
+    </main>
+    <script type="module" src="/src/splash.ts"></script>
+  </body>
+</html>

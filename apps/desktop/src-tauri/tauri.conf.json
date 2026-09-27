@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "知盾 AgentAudit",
+  "version": "0.1.2",
+  "identifier": "com.agent-audit.desktop",
+  "build": {
+    "beforeDevCommand": "npm run build --workspace @agent-audit/contracts && npm run dev --workspace @agent-audit/web -- --host 127.0.0.1",
+    "devUrl": "http://127.0.0.1:5173",
+    "beforeBuildCommand": "npm run build --workspace @agent-audit/contracts && npm run build --workspace @agent-audit/web",
+    "frontendDist": "../../web/dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "title": "知盾 AgentAudit",
+        "width": 1600,
+        "height": 1000,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "resizable": true,
+        "fullscreen": false,
+        "visible": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' ipc: http://ipc.localhost; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:*; img-src 'self' asset: data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/icon.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/32x32.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "externalBin": [
+      "binaries/agent-audit-sidecar"
+    ],
+    "shortDescription": "企业知识助手业务权限安全验收与自动化红队系统",
+    "longDescription": "知盾 AgentAudit 面向小企业管理员的本机安全验收桌面软件。",
+    "publisher": "知盾 AgentAudit"
+  }
+}

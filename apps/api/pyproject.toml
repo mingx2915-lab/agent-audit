@@ -1,0 +1,24 @@
+[project]
+name = "agent-audit-api"
+version = "0.1.2"
+description = "FastAPI demo target for 知盾 AgentAudit"
+requires-python = ">=3.11"
+dependencies = [
+  "fastembed>=0.8,<1",
+  "fastapi>=0.115,<1",
+  "httpx>=0.27,<1",
+  "openai>=1.50,<2",
+  "packaging>=23,<27",
+  "uvicorn>=0.30,<1",
+]
+
+[project.scripts]
+agent-audit = "agent_audit_api.cli:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

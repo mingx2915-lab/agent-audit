@@ -1,0 +1,32 @@
+[
+  {
+    "id": "visitor_001",
+    "displayName": "访客小周",
+    "role": "visitor"
+  },
+  {
+    "id": "employee_001",
+    "displayName": "王力",
+    "role": "employee"
+  },
+  {
+    "id": "sales_001",
+    "displayName": "张三",
+    "role": "sales"
+  },
+  {
+    "id": "hr_001",
+    "displayName": "李娜",
+    "role": "hr"
+  },
+  {
+    "id": "finance_001",
+    "displayName": "陈敏",
+    "role": "finance_manager"
+  },
+  {
+    "id": "admin_001",
+    "displayName": "管理员赵强",
+    "role": "admin"
+  }
+]

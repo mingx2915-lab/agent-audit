@@ -1,0 +1,48 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# JavaScript / TypeScript
+node_modules/
+dist/
+build/
+.next/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local runtime data
+*.log
+*.sqlite
+*.sqlite3
+tmp/
+.tmp/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Generated acceptance output
+artifacts/acceptance/generated/
+artifacts/release-evidence/
+artifacts/supply-chain-evidence/
+artifacts/supply-chain-evidence-dev/
+
+# Project-local development toolchains and desktop build output
+.tools/
+target/
+apps/desktop/src-tauri/binaries/*
+artifacts/desktop/generated/

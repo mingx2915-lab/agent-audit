@@ -1,0 +1,111 @@
+name: Cross-platform quality matrix
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-matrix-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-regression:
+    name: Core regression (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.13'
+          cache: pip
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt
+
+      - name: Install Linux native build dependencies
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential libssl-dev libgtk-3-dev \
+            libayatana-appindicator3-dev librsvg2-dev libwebkit2gtk-4.1-dev \
+            libxdo-dev
+
+      - name: Install application and test dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          python -m pip install --disable-pip-version-check -e 'apps/api[dev]'
+
+      - name: Install Chromium with Linux dependencies
+        if: runner.os == 'Linux'
+        shell: bash
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Chromium on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: npx playwright install chromium
+
+      - name: Python regression and package checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pytest -q
+          python -m compileall -q apps/api/src apps/api/scripts
+          python -m pip check
+
+      - name: TypeScript typecheck and production build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run typecheck
+          npm run build
+
+      - name: Browser end-to-end regression
+        shell: bash
+        env:
+          AGENT_AUDIT_E2E_PYTHON: python
+        run: npm run test:e2e
+
+      - name: Rust formatting, compile, and library tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check
+          cargo check --locked --manifest-path apps/desktop/src-tauri/Cargo.toml
+          cargo test --locked --manifest-path apps/desktop/src-tauri/Cargo.toml --lib
+
+      - name: Repository whitespace check
+        shell: bash
+        run: git diff --check
+
+      - name: Upload Playwright diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.os }}-${{ github.sha }}
+          path: artifacts/acceptance/generated/playwright-output
+          if-no-files-found: ignore

@@ -1,0 +1,23 @@
+{
+  "name": "agent-audit",
+  "version": "0.1.2",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/desktop",
+    "packages/contracts"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @agent-audit/contracts && npm run build --workspace @agent-audit/web",
+    "desktop:dev": "npm run dev --workspace @agent-audit/desktop",
+    "desktop:sidecar": "powershell -NoProfile -ExecutionPolicy Bypass -File apps/desktop/scripts/build-sidecar.ps1",
+    "desktop:sidecar:linux": "bash apps/desktop/scripts/build-sidecar.sh",
+    "desktop:build": "npm run build --workspace @agent-audit/desktop",
+    "desktop:build:linux": "bash apps/desktop/scripts/build-linux.sh",
+    "typecheck": "npm run typecheck --workspace @agent-audit/contracts && npm run typecheck --workspace @agent-audit/web && npm run typecheck --workspace @agent-audit/desktop",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.1"
+  }
+}

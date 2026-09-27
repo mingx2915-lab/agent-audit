@@ -1,0 +1,33 @@
+[package]
+name = "agent-audit-desktop"
+version = "0.1.2"
+description = "知盾 AgentAudit cross-platform desktop shell"
+authors = ["AgentAudit"]
+edition = "2021"
+rust-version = "1.88.0"
+default-run = "agent-audit-desktop"
+build = "build.rs"
+
+[lib]
+name = "agent_audit_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+pdf-extract = "0.12.0"
+quick-xml = "0.41.0"
+tauri = { version = "2.11.5", features = [] }
+tauri-plugin-dialog = "2.7.2"
+tauri-plugin-shell = "2.3.5"
+zip = { version = "4.2.0", default-features = false, features = ["deflate-flate2"] }
+
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "3.6.3", default-features = false, features = ["windows-native"] }
+windows-sys = { version = "0.61.2", features = ["Win32_Storage_FileSystem"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3.6.3", default-features = false, features = ["sync-secret-service", "crypto-rust", "vendored"] }

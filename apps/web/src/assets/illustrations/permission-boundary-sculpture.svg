@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520" fill="none">
+<defs>
+  <radialGradient id="halo"><stop stop-color="#126b7d" stop-opacity=".5"/><stop offset="1" stop-color="#0b2038" stop-opacity="0"/></radialGradient>
+  <linearGradient id="glass" x1="285" y1="130" x2="405" y2="355" gradientUnits="userSpaceOnUse"><stop stop-color="#a4fff1" stop-opacity=".72"/><stop offset=".44" stop-color="#26b9c3" stop-opacity=".22"/><stop offset="1" stop-color="#2276a6" stop-opacity=".36"/></linearGradient>
+  <linearGradient id="edge"><stop stop-color="#cafff6"/><stop offset="1" stop-color="#1d909d"/></linearGradient>
+  <linearGradient id="plate" x1="200" y1="300" x2="520" y2="430" gradientUnits="userSpaceOnUse"><stop stop-color="#284665"/><stop offset="1" stop-color="#122b47"/></linearGradient>
+  <linearGradient id="paper"><stop stop-color="#cee9ed"/><stop offset="1" stop-color="#779ebc"/></linearGradient>
+</defs>
+<path fill="#0b2038" d="M0 0h720v520H0z"/>
+<ellipse cx="378" cy="280" rx="325" ry="225" fill="url(#halo)"/>
+<!-- A measured isometric field carries the conceptual data paths. -->
+<g stroke="#7ba3c3" stroke-opacity=".09"><path d="M0 330L360 122L720 330M0 400L360 192L720 400M0 470L360 262L720 470M60 505L420 297M180 505L540 297M300 505L660 297M60 297L420 505M180 297L540 505M300 297L660 505"/></g>
+<ellipse cx="366" cy="360" rx="224" ry="113" stroke="#6294b4" stroke-opacity=".23" stroke-dasharray="3 8"/>
+<path d="M151 391C203 465 437 502 569 391" stroke="#54c7cb" stroke-opacity=".65" stroke-width="2"/>
+<path d="M551 391H570L565 410" stroke="#54c7cb" stroke-width="2"/>
+<!-- Layered platform with an illuminated permission boundary. -->
+<path d="M206 328L365 235L524 328V350L365 443L206 350Z" fill="#10283f" stroke="#446987"/>
+<path d="M206 328L365 235L524 328L365 420Z" fill="url(#plate)" stroke="#668ea5"/>
+<path d="M225 328L365 247L505 328L365 409Z" stroke="#5ac9c9" stroke-opacity=".6"/>
+<path d="M365 420V443M224 354L344 424" stroke="#84e4e0" stroke-opacity=".25"/>
+<ellipse cx="365" cy="326" rx="92" ry="53" fill="#1f7583" fill-opacity=".15" stroke="#69ddd4" stroke-opacity=".5"/>
+<ellipse cx="365" cy="326" rx="68" ry="39" stroke="#77dfd7" stroke-opacity=".2"/>
+<!-- Glass shield: offset back face, bevel, and deliberately non-status centre. -->
+<path d="M366 111L446 151V235C446 291 405 329 366 351L354 344L354 114Z" fill="#12576b" stroke="#418f9c"/>
+<path d="M354 105L434 145V229C434 285 393 323 354 345C315 323 274 285 274 229V145Z" fill="url(#glass)" stroke="url(#edge)" stroke-width="2"/>
+<path d="M354 121L419 153V228C419 274 386 307 354 328C322 307 289 274 289 228V153Z" stroke="#d0fff6" stroke-opacity=".35"/>
+<path d="M354 105V345M274 145L354 185L434 145" stroke="#b1fff0" stroke-opacity=".18"/>
+<path d="M334 203L354 191L374 203V226L354 238L334 226Z" stroke="#d6fff7" stroke-width="2"/>
+<path d="M354 202V226M343 208L365 220M365 208L343 220" stroke="#c6fff4" stroke-width="2"/>
+<circle cx="354" cy="215" r="45" stroke="#9eefe7" stroke-opacity=".23"/>
+<!-- Three pages, incoming source, and a separate coral probe. -->
+<path d="M88 254L151 218L206 250L143 287Z" fill="#264966" stroke="#6a99b6"/>
+<path d="M88 243L151 207L206 239L143 276Z" fill="#3b617f" stroke="#8dafc4"/>
+<path d="M88 232L151 196L206 228L143 265Z" fill="url(#paper)" stroke="#d4e8ec"/>
+<path d="M119 226L150 208M130 232L167 211M142 239L179 217" stroke="#37657d" stroke-width="3"/>
+<path d="M145 287V313L263 381" stroke="#54c7cb" stroke-width="2"/>
+<circle cx="145" cy="287" r="4" fill="#91f0df"/>
+<path d="M127 163L216 214L274 181" stroke="#ed8d82" stroke-width="2" stroke-dasharray="5 5"/>
+<circle cx="127" cy="163" r="5" fill="#ed8d82"/>
+<path d="M265 172L283 190M283 172L265 190" stroke="#ffb4a5" stroke-width="2"/>
+<!-- Tool and destination modules. -->
+<path d="M443 288L519 244L577 278" stroke="#5dd5cd" stroke-width="2"/>
+<g stroke="#82c6d2"><path d="M531 188L566 168L601 188V229L566 249L531 229Z" fill="#173c57"/><path d="M531 188L566 209L601 188M566 209V249"/><path d="M549 198V217L559 223" stroke-opacity=".5"/></g>
+<path d="M566 174L590 188L566 202L542 188Z" fill="#51c3c6" fill-opacity=".25"/>
+<g stroke="#7197d0"><path d="M561 304L591 287L621 304V339L591 356L561 339Z" fill="#1a3554"/><path d="M561 304L591 321L621 304M591 321V356"/></g>
+<circle cx="519" cy="244" r="5" fill="#98efdf"/>
+<path d="M518 244V161L477 137" stroke="#71bfc5" stroke-opacity=".35" stroke-dasharray="3 5"/>
+<g fill="#99cede"><circle cx="477" cy="137" r="3"/><circle cx="211" cy="117" r="2"/><circle cx="590" cy="126" r="2"/><circle cx="463" cy="430" r="2"/></g>
+</svg>

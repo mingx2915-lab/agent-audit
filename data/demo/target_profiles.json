@@ -1,0 +1,30 @@
+[
+  {
+    "id": "secure",
+    "name": "Secure Target Agent",
+    "enforceResourceAuthorization": true,
+    "enforceToolAuthorization": true,
+    "enforceSinkAuthorization": true
+  },
+  {
+    "id": "vulnerable_observe_only",
+    "name": "Vulnerable Observe-only Target Agent",
+    "enforceResourceAuthorization": false,
+    "enforceToolAuthorization": true,
+    "enforceSinkAuthorization": true
+  },
+  {
+    "id": "vulnerable_tool_observe_only",
+    "name": "Vulnerable Tool Observe-only Target Agent",
+    "enforceResourceAuthorization": true,
+    "enforceToolAuthorization": false,
+    "enforceSinkAuthorization": true
+  },
+  {
+    "id": "vulnerable_sink_observe_only",
+    "name": "Vulnerable Sink Observe-only Target Agent",
+    "enforceResourceAuthorization": true,
+    "enforceToolAuthorization": true,
+    "enforceSinkAuthorization": false
+  }
+]

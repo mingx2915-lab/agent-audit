@@ -1,0 +1,14 @@
+[
+  {
+    "id": "customer_001",
+    "name": "蓝海科技（合成）",
+    "ownerId": "sales_001",
+    "summary": "SYNTHETIC / DEMO ONLY。企业版客户，合同状态为 active，续约窗口在 2026 年第四季度。"
+  },
+  {
+    "id": "customer_002",
+    "name": "远山物流（合成）",
+    "ownerId": "sales_002",
+    "summary": "SYNTHETIC / DEMO ONLY。标准版客户，合同状态为 active，季度复盘需要销售负责人更新。"
+  }
+]

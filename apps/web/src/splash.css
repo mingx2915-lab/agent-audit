@@ -1,0 +1,103 @@
+:root {
+  color: #dbe7f6;
+  background: #081522;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body {
+  background: #071522;
+}
+.splash {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100%;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 52px 58px 34px;
+  border: 1px solid rgba(142, 168, 200, 0.2);
+  background: #071522;
+}
+.splash::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 17, 29, 0.96) 0%, rgba(5, 17, 29, 0.84) 36%, rgba(5, 17, 29, 0.26) 66%, rgba(5, 17, 29, 0.04) 100%),
+    linear-gradient(180deg, rgba(3, 13, 24, 0.16), rgba(3, 13, 24, 0.44));
+  content: "";
+  pointer-events: none;
+}
+.splash-artwork {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.76;
+  transition: opacity 260ms ease, filter 260ms ease;
+  animation: workspace-arrive 900ms cubic-bezier(0.22, 0.72, 0.24, 1) both;
+}
+.splash-artwork img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.01);
+}
+.splash-brand, .splash-status, footer {
+  position: relative;
+  z-index: 2;
+}
+.splash-brand { display: flex; align-items: center; gap: 18px; }
+.splash-mark { display: block; width: 74px; height: 74px; }
+.splash-name, .splash-subtitle, .startup-status, .startup-detail { margin: 0; }
+.splash-name { color: #f4f8fd; font-size: 24px; font-weight: 720; letter-spacing: 0.02em; }
+.splash-name span { color: #5f8ff8; font-weight: 560; }
+.splash-subtitle { margin-top: 7px; color: #8da0b7; font-size: 12px; letter-spacing: 0.08em; }
+.splash-status { display: grid; max-width: 620px; gap: 10px; }
+.startup-track { display: grid; width: 260px; grid-template-columns: 1.15fr 1.45fr 0.42fr 1.15fr; gap: 6px; }
+.startup-track span { height: 5px; border-radius: 99px; opacity: 0.32; animation: audit-pulse 1.6s ease-in-out infinite; }
+.track-contract { background: #f3faf8; }
+.track-trace { background: #2ec4b6; animation-delay: 160ms !important; }
+.track-finding { background: #ff5a5f; animation-delay: 320ms !important; }
+.track-replay { background: #5b8ff9; animation-delay: 480ms !important; }
+.startup-status { color: #f1f6fb; font-size: 16px; font-weight: 650; }
+.startup-detail { max-width: 600px; color: #a8b9cc; font-size: 14px; line-height: 1.6; }
+.startup-guidance { display: grid; max-width: 600px; gap: 8px; margin-top: 3px; padding: 14px 16px; background: rgba(255, 90, 95, 0.08); border: 1px solid rgba(255, 90, 95, 0.28); border-radius: 9px; }
+.startup-guidance[hidden] { display: none; }
+.startup-impact, .startup-recovery { margin: 0; font-size: 14px; line-height: 1.55; }
+.startup-impact { color: #f3f7fc; font-weight: 620; }
+.startup-recovery { color: #b6c7da; }
+.startup-technical { color: #9fb3ca; font-size: 13px; }
+.startup-technical summary { width: fit-content; color: #8eb1ff; cursor: pointer; font-size: 13px; }
+.startup-technical pre { max-height: 120px; margin: 9px 0 0; padding: 10px 12px; overflow: auto; color: #c4d2e2; background: rgba(3, 12, 23, 0.68); border: 1px solid rgba(142, 168, 200, 0.22); border-radius: 7px; font: 12px/1.55 "SFMono-Regular", Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.startup-exit { justify-self: start; min-height: 42px; margin-top: 4px; padding: 8px 16px; color: #f5f8fc; background: rgba(255, 90, 95, 0.12); border: 1px solid rgba(255, 90, 95, 0.46); border-radius: 7px; cursor: pointer; font-size: 14px; font-weight: 650; }
+.startup-exit[hidden] { display: none; }
+body[data-runtime-state="failed"] .startup-track span,
+body[data-runtime-state="stopped"] .startup-track span { animation: none; opacity: 0.22; }
+body[data-runtime-state="failed"] .track-finding { opacity: 1; }
+body[data-runtime-state="ready"] .splash-artwork { opacity: 0.9; filter: brightness(1.14) saturate(1.08); }
+body[data-runtime-state="failed"] .splash-artwork,
+body[data-runtime-state="stopped"] .splash-artwork { opacity: 0.48; filter: brightness(0.68) saturate(0.52); animation: none; }
+footer { color: #53677f; font-family: "SFMono-Regular", Consolas, monospace; font-size: 9px; letter-spacing: 0.16em; }
+
+@keyframes audit-pulse {
+  0%, 100% { opacity: 0.28; }
+  42% { opacity: 1; }
+}
+
+@keyframes workspace-arrive {
+  from { opacity: 0; transform: translate3d(12px, 0, 0) scale(1.015); }
+  to { opacity: 0.76; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .startup-track span { animation: none; opacity: 0.8; }
+  .splash-artwork { animation: none; transition: none; }
+}

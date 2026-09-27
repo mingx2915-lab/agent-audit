@@ -1,0 +1,131 @@
+{
+  "id": "contract_nebula_default",
+  "name": "星云科技默认 Security Contract",
+  "version": 1,
+  "roles": [
+    {"id": "visitor", "displayName": "访客"},
+    {"id": "employee", "displayName": "员工"},
+    {"id": "sales", "displayName": "销售"},
+    {"id": "hr", "displayName": "人力"},
+    {"id": "finance_manager", "displayName": "财务经理"},
+    {"id": "admin", "displayName": "管理员"}
+  ],
+  "resourceRules": [
+    {
+      "id": "resource_public_all",
+      "description": "所有 Demo 角色可读取公开资料",
+      "matchLabels": ["public"],
+      "allowedRoles": ["visitor", "employee", "sales", "hr", "finance_manager", "admin"],
+      "requireOwnerMatch": false
+    },
+    {
+      "id": "resource_external_document_all",
+      "description": "所有 Demo 角色可读取用于安全演示的外部不可信文档",
+      "matchLabels": ["external_document"],
+      "allowedRoles": ["visitor", "employee", "sales", "hr", "finance_manager", "admin"],
+      "requireOwnerMatch": false
+    },
+    {
+      "id": "resource_customer_owner",
+      "description": "销售只能读取本人客户资料",
+      "matchLabels": ["customer", "confidential"],
+      "allowedRoles": ["sales"],
+      "requireOwnerMatch": true
+    },
+    {
+      "id": "resource_confidential_admin",
+      "description": "管理员可读取 Demo 机密资料",
+      "matchLabels": ["confidential"],
+      "allowedRoles": ["admin"],
+      "requireOwnerMatch": false
+    },
+    {
+      "id": "resource_finance_manager",
+      "description": "财务经理可读取财务资料",
+      "matchLabels": ["finance", "confidential"],
+      "allowedRoles": ["finance_manager"],
+      "requireOwnerMatch": false
+    },
+    {
+      "id": "resource_hr_ownerless",
+      "description": "人力角色可读取人事流程资料",
+      "matchLabels": ["hr", "confidential"],
+      "allowedRoles": ["hr"],
+      "requireOwnerMatch": false
+    }
+  ],
+  "toolRules": [
+    {
+      "id": "tool_customer_owner_read",
+      "description": "销售只能读取本人客户记录",
+      "toolName": "mock_customer_lookup",
+      "action": "read",
+      "allowedRoles": ["sales"],
+      "requireOwnerMatch": true,
+      "maxRecords": null,
+      "requireApproval": false
+    },
+    {
+      "id": "tool_customer_admin_read",
+      "description": "管理员可读取 Demo 客户记录",
+      "toolName": "mock_customer_lookup",
+      "action": "read",
+      "allowedRoles": ["admin"],
+      "requireOwnerMatch": false,
+      "maxRecords": null,
+      "requireApproval": false
+    },
+    {
+      "id": "tool_mail_send_finance",
+      "description": "财务经理和管理员可调用合成邮件工具",
+      "toolName": "mock_mail_send",
+      "action": "send",
+      "allowedRoles": ["finance_manager", "admin"],
+      "requireOwnerMatch": false,
+      "maxRecords": null,
+      "requireApproval": false
+    },
+    {
+      "id": "tool_customer_export_sales",
+      "description": "销售和管理员可调用合成客户导出工具，但单次最多导出一条记录",
+      "toolName": "mock_customer_export",
+      "action": "export",
+      "allowedRoles": ["sales", "admin"],
+      "requireOwnerMatch": false,
+      "maxRecords": 1,
+      "requireApproval": false
+    }
+  ],
+  "sinkRules": [
+    {
+      "id": "sink_external_message_public",
+      "description": "公开资料可以发送到合成外部消息 Sink",
+      "sinkType": "external_message",
+      "matchLabels": ["public"],
+      "allowedRoles": ["visitor", "employee", "sales", "hr", "finance_manager", "admin"],
+      "allowExternal": true,
+      "requireApproval": false,
+      "blockedSourceTrustLevels": []
+    },
+    {
+      "id": "sink_external_message_confidential",
+      "description": "机密资料发送到外部消息 Sink 必须审批且不得由不可信来源驱动",
+      "sinkType": "external_message",
+      "matchLabels": ["confidential"],
+      "allowedRoles": ["finance_manager", "admin"],
+      "allowExternal": true,
+      "requireApproval": true,
+      "blockedSourceTrustLevels": ["untrusted"]
+    },
+    {
+      "id": "sink_customer_export_internal",
+      "description": "销售和管理员可将客户记录写入合成工作区导出 Sink",
+      "sinkType": "customer_export",
+      "matchLabels": ["customer"],
+      "allowedRoles": ["sales", "admin"],
+      "allowExternal": false,
+      "requireApproval": false,
+      "blockedSourceTrustLevels": []
+    }
+  ]
+}

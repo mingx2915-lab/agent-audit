@@ -1,0 +1,88 @@
+name: Supply-chain evidence
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  supply-chain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.13'
+          cache: pip
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - name: Install locked application dependencies
+        run: |
+          set -euo pipefail
+          npm ci
+          python -m venv "$RUNNER_TEMP/agent-audit-target-python"
+          "$RUNNER_TEMP/agent-audit-target-python/bin/python" -m pip install \
+            --disable-pip-version-check \
+            -e 'apps/api[dev]'
+          python -m venv "$RUNNER_TEMP/agent-audit-pip-audit"
+          "$RUNNER_TEMP/agent-audit-pip-audit/bin/python" -m pip install \
+            --disable-pip-version-check \
+            'pip-audit==2.10.1'
+          cargo install cargo-audit --version 0.22.2 --locked \
+            --root "$RUNNER_TEMP/agent-audit-cargo-audit"
+      - name: Generate online supply-chain evidence
+        run: |
+          set -euo pipefail
+          output_dir="$RUNNER_TEMP/agent-audit-supply-chain"
+          run_id="github-${GITHUB_RUN_ID}"
+          target_python="$RUNNER_TEMP/agent-audit-target-python/bin/python"
+          audit_python="$RUNNER_TEMP/agent-audit-pip-audit/bin/python"
+          cargo_audit="$RUNNER_TEMP/agent-audit-cargo-audit/bin/cargo-audit"
+          test -x "$target_python"
+          test -x "$audit_python"
+          test -x "$cargo_audit"
+          set +e
+          "$target_python" apps/api/scripts/build_supply_chain_evidence.py \
+            --output-dir "$output_dir" \
+            --run-id "$run_id" \
+            --online \
+            --python-executable "$target_python" \
+            --pip-audit-python "$audit_python" \
+            --npm-tool npm \
+            --cargo-tool cargo \
+            --cargo-audit-tool "$cargo_audit"
+          command_status=$?
+          set -e
+          summary="$output_dir/$run_id/summary.json"
+          test -s "$summary"
+          test "$command_status" -le 1
+          status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["status"])' "$summary")"
+          case "$status" in
+            passed)
+              test "$command_status" -eq 0
+              ;;
+            findings|incomplete|failed)
+              test "$command_status" -eq 1
+              exit 1
+              ;;
+            *)
+              echo "unknown supply-chain evidence status: $status" >&2
+              exit 1
+              ;;
+          esac
+      - name: Upload supply-chain evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-audit-supply-chain-${{ github.sha }}
+          path: ${{ runner.temp }}/agent-audit-supply-chain
+          if-no-files-found: error
