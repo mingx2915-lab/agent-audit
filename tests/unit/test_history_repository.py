@@ -326,7 +326,7 @@ def test_save_rejects_prepopulated_replays_and_mismatched_snapshots(tmp_path) ->
 def test_repository_errors_are_explicit_and_never_silently_fall_back(tmp_path, monkeypatch) -> None:
     repository = SQLiteAuditRunRepository(tmp_path / "audit.sqlite3")
 
-    def fail_connect():
+    def fail_connect(*, read_only: bool = False):
         raise AuditRunRepositoryError("synthetic storage failure")
 
     monkeypatch.setattr(repository, "_connect", fail_connect)
@@ -335,7 +335,7 @@ def test_repository_errors_are_explicit_and_never_silently_fall_back(tmp_path, m
         repository.list()
     with pytest.raises(AuditRunRepositoryError, match="synthetic storage failure"):
         repository.get("scan_history_001")
-    with pytest.raises(AuditRunRepositoryError, match="synthetic storage failure"):
+    with pytest.raises(AuditRunRepositoryError, match="unable to save audit scan"):
         repository.save(_detail())
 
 

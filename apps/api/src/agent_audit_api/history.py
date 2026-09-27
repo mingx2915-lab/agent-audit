@@ -130,10 +130,10 @@ class SQLiteAuditRunRepository:
 
         return self._path
 
-    def _connect(self) -> sqlite3.Connection:
+    def _connect(self, *, read_only: bool = False) -> sqlite3.Connection:
         connection: sqlite3.Connection | None = None
         try:
-            connection = SQLiteSchemaManager(self._path).connect()
+            connection = SQLiteSchemaManager(self._path).connect(read_only=read_only)
             return connection
         except (OSError, sqlite3.Error, SQLiteSchemaError) as exc:
             if connection is not None:
@@ -226,7 +226,9 @@ class SQLiteAuditRunRepository:
                         _json_payload(detail.runtime_snapshot),
                     ),
                 )
-        except (AuditRunRepositoryError, TypeError, ValueError):
+        except (AuditRunRepositoryError, TypeError, ValueError) as exc:
+            if isinstance(exc, AuditRunRepositoryError):
+                raise AuditRunRepositoryError("unable to save audit scan") from exc
             raise
         except (OSError, sqlite3.Error, json.JSONDecodeError) as exc:
             raise AuditRunRepositoryError("unable to save audit scan") from exc
@@ -238,7 +240,7 @@ class SQLiteAuditRunRepository:
         self._validate_limit(limit)
         connection: sqlite3.Connection | None = None
         try:
-            connection = self._connect()
+            connection = self._connect(read_only=True)
             rows = connection.execute(
                 """
                 SELECT
@@ -301,7 +303,7 @@ class SQLiteAuditRunRepository:
             raise ValueError("scan_id must be a non-empty string")
         connection: sqlite3.Connection | None = None
         try:
-            connection = self._connect()
+            connection = self._connect(read_only=True)
             row = connection.execute(
                 "SELECT scan_json, plan_json, contract_json, target_profile_json, runtime_json "
                 "FROM audit_runs WHERE scan_id = ?",

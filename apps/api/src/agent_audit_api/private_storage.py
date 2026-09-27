@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import stat
 from pathlib import Path
 
 
@@ -14,12 +15,23 @@ def ensure_private_directory(path: Path) -> None:
 
 
 def ensure_private_file(path: Path) -> None:
-    """Create with 0600 or restrict an existing file without truncating it."""
+    """Create with 0600 or remove group/other access without adding owner rights."""
     if os.name != "posix":
         return
-    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT, 0o600)
     try:
-        os.fchmod(descriptor, 0o600)
+        descriptor = os.open(path, os.O_RDONLY)
+    except FileNotFoundError:
+        try:
+            descriptor = os.open(
+                path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+            )
+        except FileExistsError:
+            descriptor = os.open(path, os.O_RDONLY)
+    try:
+        current_mode = stat.S_IMODE(os.fstat(descriptor).st_mode)
+        private_mode = current_mode & 0o600
+        if current_mode != private_mode:
+            os.fchmod(descriptor, private_mode)
     finally:
         os.close(descriptor)
 
@@ -29,8 +41,12 @@ def prepare_private_sqlite(path: Path) -> None:
     ensure_private_file(path)
     if os.name == "posix":
         for suffix in ("-wal", "-shm", "-journal"):
+            sidecar = Path(str(path) + suffix)
             try:
-                Path(str(path) + suffix).chmod(0o600)
+                current_mode = stat.S_IMODE(sidecar.stat().st_mode)
+                private_mode = current_mode & 0o600
+                if current_mode != private_mode:
+                    sidecar.chmod(private_mode)
             except FileNotFoundError:
                 # SQLite removes auxiliary files when connections close.
                 pass

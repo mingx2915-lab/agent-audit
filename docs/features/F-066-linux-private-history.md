@@ -65,3 +65,9 @@
 ## 实施记录
 
 F-065 GUI 外部验收仍待补；本功能只修已确认的本地权限边界。包内 Sidecar 解包运行检查不等于独立桌面安装/窗口验收；本轮未重建 Windows 安装包或 Linux AppImage。旧包保留；旧 Workspace 在新版打开时自动修正权限，未扫描其他 Workspace。
+
+### 2026-09-27 只读数据库回归补充
+
+- schema-current 的既有 SQLite 库可通过 SQLite `mode=ro` 查询；SELECT 不触发 Schema 写迁移。缺库仍显式初始化，旧 Schema 的迁移仍要求可写连接。
+- 对 owner-only 的 0400 数据库保留只读权限；不因读取尝试恢复写权限。保存到只读库时返回原有 `unable to save audit scan` / `unable to save acceptance run` 错误。
+- 定向 Linux 权限与 storage recovery 测试：24 passed。全量本地 Linux Python：909 passed / 7 skipped；Windows：893 passed / 23 skipped（POSIX 权限测试按平台跳过）。

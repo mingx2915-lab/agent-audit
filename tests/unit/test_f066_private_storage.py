@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from agent_audit_api.app_paths import resolve_app_paths
+from agent_audit_api.private_storage import ensure_private_file
 from agent_audit_api.diagnostic_logging import (
     close_bounded_logging, configure_bounded_logging, log_event,
 )
@@ -51,6 +52,16 @@ def test_existing_database_is_restricted_without_losing_rows(tmp_path: Path) -> 
         assert connection.execute('SELECT value FROM private_marker').fetchone()[0] == 'synthetic retained record'
     finally:
         connection.close()
+
+def test_existing_owner_read_only_file_stays_private_and_read_only(tmp_path: Path) -> None:
+    path = tmp_path / 'private-read-only.sqlite3'
+    path.write_text('synthetic retained record', encoding='utf-8')
+    path.chmod(0o444)
+
+    ensure_private_file(path)
+
+    assert mode(path) == 0o400
+    assert path.read_text(encoding='utf-8') == 'synthetic retained record'
 
 @pytest.mark.parametrize('journal_mode,suffixes', [('WAL', ['-wal', '-shm']), ('PERSIST', ['-journal'])])
 def test_sqlite_creates_private_auxiliary_files(tmp_path: Path, journal_mode: str, suffixes: list[str]) -> None:
@@ -161,6 +172,10 @@ def test_restored_workspace_is_private_before_activation(tmp_path: Path) -> None
 
 
 def test_permission_failure_does_not_open_database(tmp_path: Path, monkeypatch) -> None:
+    path = tmp_path / 'agent_audit.sqlite3'
+    path.write_text('existing database bytes', encoding='utf-8')
+    path.chmod(0o644)
+
     def deny_permissions(*args):
         raise PermissionError('synthetic permission denial')
     def unexpected_sqlite_open(*args, **kwargs):
@@ -168,4 +183,4 @@ def test_permission_failure_does_not_open_database(tmp_path: Path, monkeypatch) 
     monkeypatch.setattr(os, 'fchmod', deny_permissions)
     monkeypatch.setattr(sqlite3, 'connect', unexpected_sqlite_open)
     with pytest.raises(SQLiteSchemaError, match='unable to initialize history schema'):
-        SQLiteSchemaManager(tmp_path/'agent_audit.sqlite3').connect()
+        SQLiteSchemaManager(path).connect()

@@ -6,8 +6,8 @@
 
 - 状态：M6 本地双平台产品化进行中
 - 当前里程碑：M6 本地双平台产品化
-- 当前活动功能：无；F-066 权限修正已完成，F-065/F-063 外部 GUI 验收待补
-- 当前功能文档：`docs/features/F-066-linux-private-history.md`
+- 当前活动功能：F-057 工程证据闭环与跨平台质量门；本地已修正 runner 配置、品牌资源、只读 SQLite 与质量矩阵 Sidecar 构建，正在完成依赖披露和远程 Actions 验收
+- 当前功能文档：`docs/features/F-057-engineering-evidence-closure.md`
 - 2026-09-18 安装包交付：当前工作树已生成 Windows NSIS、Linux `.deb`/AppImage，交付目录 `artifacts/deliverables/AgentAudit-0.1.2-installers-20260918/`。Windows 新 EXE 两轮启停、一次崩溃恢复及冻结 API 七项只读检查通过；WSL2 Debian 12 原生构建及 artifact 检查 22/22，通过非默认 pointer 与两次真实 GTK 文件选择。全端 typecheck、Windows Python 891 passed/7 skipped、Linux Python 895 passed/3 skipped。仅修正验证脚本/测试的过时前提，未改业务实现；真实模型固定验收仍为历史 22/24。干净 Windows、独立 Linux 桌面、企业 Gateway 与完整安装窗口视觉验收仍未被本轮替代，F-063 保持 In Progress。下载按来源实测并选路，代理原选择已恢复，详见交付目录 `下载测速.md`。
 - 2026-09-09：用户优先要求的 F-064 权限拦截执行结果已完成。固定 Case/Plan 被拒绝时返回结构化结果和 Trace，界面显示中文拦截说明与此前风险。891 Python、2 项定向 E2E、全端 typecheck 通过；真实 qwen3:8b Case 返回 200/blocked、11 步 Trace、1 项资源越权。试用后端已重启；F-063 安装验收仍待完成，历史 Benchmark 22/24 结论未变。详见 `docs/features/F-064-blocked-execution-results.md`。
 - 2026-09-09 试用反馈：设置页补回常驻“模型连接”入口；已连接摘要可进入“更改连接”。Web typecheck 和真实本机模型发现界面验证通过，当前连接未变更，备份见 `output/model-entry-20260909/`。
@@ -16,10 +16,12 @@
 - 长期主控规格：`docs/M6_LOCAL_DUAL_PLATFORM_PRODUCT_PLAN.md`；F-026 历史规格保留为 `docs/M6_SMALL_BUSINESS_DESKTOP_PLAN.md`，M5/M4 基线继续保留
 - 软件工程质量评估：`docs/SOFTWARE_ENGINEERING_QUALITY_ASSESSMENT.md`；用于恢复稳定性、可用性、发布与维护性判断，不代表新功能已启动
 - 下一候选功能：无；继续已授权的外部安装验收，不自动扩展 Parking Lot
-- 当前下一步：交付 Linux 0.1.2-2 权限修正包，等待独立 Linux 桌面实装及 GUI 回归；F-065/F-063 原有外部验收继续待补，不以包内 Sidecar 冒烟替代。
-- 阻塞项：无本地实现阻塞。Windows/Linux matrix 尚未远程运行；三项目标环境均为 `not_verified`。Python license review 已闭合；18 个 RustSec Finding 仍是已分析、已分配但尚未完成上游迁移的维护债务
+- 当前下一步：将已完成的修复推送到 GitHub 分支并等待 Windows/Ubuntu quality matrix 实际结束；获取新一轮 supply-chain artifact 后刷新登记。源代码许可证仍需项目所有者决定。
+- 阻塞项：更新后的 GitHub Actions 尚未运行（当前改动仍在本地分支）；本地 WSL Ubuntu 26.04 不受 Playwright 支持，因此 Linux E2E 留待 Ubuntu 24.04 runner；RustSec 保留 18 项未解决 Finding，本机无法连接 GitHub Advisory DB 刷新在线扫描。没有把测试触发、Finding review 或本地结果冒充为远程全绿。
 
 ## 当前功能进展
+
+- 2026-09-27 F-057 修复进展：Windows 本地 Python 893/23 skipped、Node 20.19 typecheck/build、Playwright 61 项通过；WSL Linux Python 909/7 skipped、Rust 1.88 cargo check 与 12 项 library tests 通过，Linux Sidecar 构建成功。品牌主图已补回且与 Web/desktop 图标字节一致。更新后的 GitHub Actions 尚未推送运行，F-057 保持 In Progress。
 
 - 2026-09-18 F-066 已完成：history 0700，SQLite 主库/现存辅助文件及诊断日志 0600；旧 Workspace 打开时修正，数据保留。Windows 894 passed/18 skipped，Linux 907 passed/5 skipped；nobody 正负控制及实际新包断网空缓存 BGE 六项通过。Linux .deb Debian 修订号递增为 0.1.2-2，交付 artifacts/deliverables/AgentAudit-0.1.2-2-linux-f066-20260918/。Windows 安装包与 AppImage 未重建，独立 GUI 验收未被替代。
 - 2026-09-18 用户提供新版 Linux 外部实装回归：离线 BGE、Health 实际端口、绑定失败状态、SIGTERM、中文/空格路径和 GET 冒烟通过；发现历史 SQLite 0644 可被其他用户读取。F-066 按此报告修正主库、辅助文件和日志权限；F-065 独立 GUI 验收保持待补，缺 WebKitGTK 的容器未算应用故障或 GUI 通过。

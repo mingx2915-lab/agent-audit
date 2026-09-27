@@ -1,9 +1,9 @@
 # F-057 工程证据闭环与跨平台质量门
 
-- 状态：Implementation Complete / External Acceptance Pending
+- 状态：In Progress
 - 所属里程碑：M6
 - 负责人：主代理
-- 相关决定：用户要求跳过陌生用户五分钟任务，优先收口供应链、目标环境、CI、文档与性能证据
+- 相关决定：用户要求跳过陌生用户五分钟任务，优先收口供应链、目标环境、CI、文档与性能证据；2026-09-27 用户要求处理首轮 Actions 暴露的问题并重跑验证
 
 ## 用户价值
 
@@ -45,6 +45,9 @@
 
 - [x] 建立并校验 18 个 RustSec Finding 和 22 个 Python unknown license 的逐项 review 登记；
 - [x] 建立 Windows/Linux 核心回归矩阵，与已有 Linux release / supply-chain workflow 边界一致；
+- [x] 修正首轮 GitHub Actions 暴露的 Python runner 选择和品牌主图缺失；
+- [x] 修复 scan / acceptance SQLite 只读数据库的读取与拒绝写入行为；
+- [x] 对 18 个 RustSec Finding 采用可兼容的已发布补丁，并为上游阻塞项形成精确披露；
 - [x] 收口三项目标环境的可执行验收入口与证据模板，真实未跑项保持 pending；
 - [x] 生成一份当前机器的可复跑性能/资源基线，写明不能外推的边界；
 - [x] 只修事实地同步 F-052/F-031 等时间线及当前状态；
@@ -69,6 +72,11 @@
 - 性能基线：除原 100/100 外，新增显式 `--long-soak` 的 1,000 轮容量基线 `artifacts/acceptance/generated/f057-core-1000-20260831/stability_ce048cf91e6c.json`；1000/1000 workflow、Finding 与 Replay 通过，p50 `27.44 ms`、p95 `30.97 ms`、History `1000`、Provider calls `6000`，总时长约 `28.04 s`。它仍只使用 deterministic provider、临时 SQLite 和 7 文档合成数据，不是小时级持续运行或真实模型资源结论；
 - 新冻结 Windows Sidecar 完成 1 次正常 lifecycle 与 1 次 crash-recovery，结果 passed；这只验证递归 metadata 打包没有破坏启动，不替代干净 Windows 验收；
 - CI：`.github/workflows/quality-matrix.yml` 已建立 Windows 2022 / Ubuntu 24.04 矩阵，但尚未获得 GitHub runner 的首轮实际结果，因此对应验收项保持未勾选；
+- 2026-09-27 本地修复：quality matrix 的 Python 选择由固定补丁版改为 `3.11`；源码包补回与 Web/desktop 图标 SHA-256 相同的品牌主图 `249B5E795CD117968B0FFBFB4AFC95E1ACD4D6BAF4D5DD3E436A846D050F11BC`；SQLite SELECT 路径只读打开，初始化/迁移与写入仍走显式可写连接。质量矩阵也新增了正式 Windows/Linux Sidecar 构建步骤，避免干净 runner 在 Tauri `externalBin` 检查阶段失败；
+- 2026-09-27 Windows 本地质量命令：Python 3.11.9 `893 passed, 23 skipped`，`compileall`、`pip check` 通过；Node 20.19.0 `typecheck`、production build、Playwright `61 passed` 通过。Sidecar 已按正式脚本构建并验证嵌入的 pinned model；本地未运行 Windows MSVC Rust toolchain；
+- 2026-09-27 Linux/WSL 本地质量命令：Python 3.11.13 `909 passed, 7 skipped`，`compileall`、`pip check` 通过；Rust 1.88 `cargo check --locked` 和 `cargo test --locked --lib`（12 项）通过，Linux Sidecar 按正式脚本构建。Node 20.19.0 `typecheck`、production build 通过；本机 WSL 是 Ubuntu 26.04，Playwright 明确不支持该系统，故本地 Linux E2E 未执行（GitHub 矩阵目标仍为 Ubuntu 24.04）；
+- 2026-09-27 依赖处置：将 `pdf-extract` 锁定版本从 0.12.0 更新到发布的兼容补丁版 0.12.1；锁定图仍为 `pdf-extract 0.12.1 -> lopdf 0.42.0 -> ttf-parser 0.25.1`，故 `RUSTSEC-2026-0192` 保持未解决。其余 GTK3、glib、urlpattern/unic 与 build-time proc-macro Finding 仍保留 `in_progress`，逐项说明见 `docs/release-notes/0.1.2-candidate-engineering-disclosure.md`；没有关闭扫描或新增 allowlist。供应链 CLI 的当前 Advisory DB 刷新因无法连接 GitHub RustSec 数据库而失败，release-5 是本机最新可验证登记；
+- 2026-09-27 远程边界：此修复尚未推送，因此 GitHub Actions 没有在更新后的提交上重跑；本地 Windows/WSL 命令不记作 Actions 通过。源树未添加许可证，公开复用授权仍由项目所有者决定；
 - 外部人工步骤：`docs/TARGET_ENVIRONMENT_ACCEPTANCE.md` 中三项仍为 `not_verified`。用户决定暂缓干净 Windows、之后找人安装；Debian pointer 需要 Linux 目标环境；真实企业 Gateway 找不到时保持非阻塞外部边界，不声称真实企业部署。
 
 ## 实施记录
@@ -80,3 +88,4 @@
 - 当前本地实现已收口；F-057 保持未勾选，直到 Windows/Linux 远程矩阵真实运行。三项目标环境验收属于独立外部证据，不因 CI 通过而自动升级。
 - 2026-08-31：用户要求继续完成当前机器可执行项，并明确暂缓干净 Windows 安装验收；本轮只推进供应链许可证/依赖核实、长时间基线与质量矩阵本地验证，不改变 Debian、真实 Gateway 和干净 Windows 的 `not_verified` 状态。
 - 2026-08-31：完成 release-5 在线扫描、Python metadata 通用修复、Sidecar 递归 license metadata 打包和 1,000 轮容量 soak。RustSec 剩余 18 项均来自已确认依赖路径：GTK3/Tauri、tauri-utils/urlpattern、构建期 proc macro 或 pdf-extract/lopdf/ttf-parser；不做脱离上游兼容性的单 crate 强升。
+- 2026-09-27：用户要求处理 Actions 暴露的 CI/SQLite/RustSec 项；本地 Windows 与 WSL Python 全量测试通过，Windows Playwright 通过 61 项，Linux Rust library 通过 12 项。F-057 仍为 In Progress，直到修复提交上的 GitHub Windows/Ubuntu 矩阵实际完成。

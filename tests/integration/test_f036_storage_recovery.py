@@ -178,10 +178,12 @@ def test_sqlite_read_only_file_remains_readable_and_rejects_save(
     repository.list()
     original_mode = stat.S_IMODE(path.stat().st_mode)
     path.chmod(original_mode & ~(stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH))
+    read_only_mode = stat.S_IMODE(path.stat().st_mode)
     try:
         # The current schema requires no migration, so querying a read-only
         # store is valid. Exercise an actual write to check the error boundary.
         assert repository.list() == []
+        assert stat.S_IMODE(path.stat().st_mode) == read_only_mode
         with pytest.raises(
             (AuditRunRepositoryError, AcceptanceRunRepositoryError),
             match="unable to save",

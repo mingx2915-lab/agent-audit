@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11.13'
+          python-version: '3.11'
           cache: pip
 
       - uses: dtolnay/rust-toolchain@stable
@@ -57,7 +57,7 @@ jobs:
         run: |
           set -euo pipefail
           npm ci
-          python -m pip install --disable-pip-version-check -e 'apps/api[dev]'
+          python -m pip install --disable-pip-version-check -e 'apps/api[dev]' pyinstaller
 
       - name: Install Chromium with Linux dependencies
         if: runner.os == 'Linux'
@@ -89,6 +89,18 @@ jobs:
         env:
           AGENT_AUDIT_E2E_PYTHON: python
         run: npm run test:e2e
+
+      - name: Build Windows Sidecar for Tauri checks
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./apps/desktop/scripts/build-sidecar.ps1 -Python python
+
+      - name: Build Linux Sidecar for Tauri checks
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          PYTHON_BIN: python
+        run: bash apps/desktop/scripts/build-sidecar.sh
 
       - name: Rust formatting, compile, and library tests
         shell: bash

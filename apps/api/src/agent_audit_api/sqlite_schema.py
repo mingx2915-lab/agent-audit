@@ -63,14 +63,27 @@ class SQLiteSchemaManager:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
 
-    def connect(self) -> sqlite3.Connection:
+    def connect(self, *, read_only: bool = False) -> sqlite3.Connection:
         connection: sqlite3.Connection | None = None
         try:
             self.path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            if read_only and not self.path.exists():
+                initialized = self.connect()
+                initialized.close()
             prepare_private_sqlite(self.path)
-            connection = sqlite3.connect(str(self.path))
+            if read_only:
+                uri = f"{self.path.resolve().as_uri()}?mode=ro"
+                connection = sqlite3.connect(uri, uri=True)
+            else:
+                connection = sqlite3.connect(str(self.path))
             connection.row_factory = sqlite3.Row
-            self.ensure(connection)
+            if read_only:
+                if self.inspect(connection) != SQLITE_SCHEMA_VERSION:
+                    raise SQLiteSchemaError(
+                        "history schema requires a writable migration"
+                    )
+            else:
+                self.ensure(connection)
             return connection
         except (OSError, sqlite3.Error, SQLiteSchemaError) as exc:
             if connection is not None:

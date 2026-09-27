@@ -77,10 +77,10 @@ class SQLiteAcceptanceRunRepository:
 
         return self._path
 
-    def _connect(self) -> sqlite3.Connection:
+    def _connect(self, *, read_only: bool = False) -> sqlite3.Connection:
         connection: sqlite3.Connection | None = None
         try:
-            connection = SQLiteSchemaManager(self._path).connect()
+            connection = SQLiteSchemaManager(self._path).connect(read_only=read_only)
             return connection
         except (OSError, sqlite3.Error, SQLiteSchemaError) as exc:
             if connection is not None:
@@ -138,7 +138,11 @@ class SQLiteAcceptanceRunRepository:
                         payload,
                     ),
                 )
-        except (AcceptanceRunRepositoryError, TypeError, ValueError):
+        except (AcceptanceRunRepositoryError, TypeError, ValueError) as exc:
+            if isinstance(exc, AcceptanceRunRepositoryError):
+                raise AcceptanceRunRepositoryError(
+                    "unable to save acceptance run"
+                ) from exc
             raise
         except (OSError, sqlite3.Error) as exc:
             # SQLite's UNIQUE/PRIMARY KEY failure is intentionally surfaced as
@@ -154,7 +158,7 @@ class SQLiteAcceptanceRunRepository:
         self._validate_limit(limit)
         connection: sqlite3.Connection | None = None
         try:
-            connection = self._connect()
+            connection = self._connect(read_only=True)
             rows = connection.execute(
                 "SELECT run_json FROM acceptance_runs "
                 "ORDER BY completed_at DESC, run_id DESC LIMIT ?",
@@ -175,7 +179,7 @@ class SQLiteAcceptanceRunRepository:
         self._validate_run_id(run_id)
         connection: sqlite3.Connection | None = None
         try:
-            connection = self._connect()
+            connection = self._connect(read_only=True)
             row = connection.execute(
                 "SELECT run_json FROM acceptance_runs WHERE run_id = ?",
                 (run_id,),
@@ -199,7 +203,7 @@ class SQLiteAcceptanceRunRepository:
         self._validate_run_id(run_id)
         connection: sqlite3.Connection | None = None
         try:
-            connection = self._connect()
+            connection = self._connect(read_only=True)
             current = connection.execute(
                 "SELECT completed_at FROM acceptance_runs WHERE run_id = ?",
                 (run_id,),

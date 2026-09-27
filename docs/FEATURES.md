@@ -80,7 +80,7 @@
 - [x] ~~F-054 Workspace 与 SQLite 版本迁移~~
 - [x] ~~F-055 Linux CI 构建与 artifact smoke~~
 - [x] ~~F-056 SBOM、许可证与依赖漏洞审计~~
-- [ ] F-057 工程证据闭环与跨平台质量门（Implementation Complete / External Acceptance Pending；本地供应链与 1,000 轮容量基线已收口，待 Windows/Linux CI 首轮真实运行）
+- [ ] F-057 工程证据闭环与跨平台质量门（In Progress：本地 Windows/WSL 回归修复通过；更新后的 GitHub Actions 待运行，18 个 RustSec Finding 保持待处置/披露）
 - [x] ~~F-058 本机运行引导与桌面交互响应~~
 - [x] ~~F-059 人话攻击链与分层技术证据~~
 - [x] ~~F-060 首次使用、比赛表达与视觉体验收口~~
