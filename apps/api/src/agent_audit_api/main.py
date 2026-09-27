@@ -1,5 +1,7 @@
 """FastAPI entrypoint for the controlled AgentAudit demo target."""
 
+# Team attribution: 鉴权未来. See repository-root AUTHORS.md.
+
 from __future__ import annotations
 
 import json

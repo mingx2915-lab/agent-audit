@@ -4,6 +4,8 @@
 
 知盾 AgentAudit 在仓库内的合成企业知识助手靶场中，验证 Agent 是否遵守 Security Contract，并用真实执行产生的 Retrieval、Authorization、Tool、Sink Trace 定位业务权限违规，最后对同一攻击完成修复 Replay。
 
+> 团队署名与源码快照验证：[AUTHORS.md](AUTHORS.md) · [AUTHENTICITY.md](AUTHENTICITY.md)。
+
 > SYNTHETIC / DEMO ONLY：仓库只包含合成角色、文档和客户数据，Enterprise Tool 为 Mock；系统不扫描任意外部目标，也不发送真实邮件。
 
 ```text
