@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { test } from "./support/test";
 import { openProviderSetupFromFirstUse } from "./support/first_use";
 
 // These browser routes are explicit test-only API doubles.  They do not

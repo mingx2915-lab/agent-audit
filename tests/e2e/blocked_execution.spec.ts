@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './support/test';
 
 for (const kind of ['case', 'plan'] as const) {
   test(`权限拦截作为执行结果保留风险与 Trace：${kind}`, async ({ page }) => {
