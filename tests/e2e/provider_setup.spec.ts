@@ -298,9 +298,16 @@ test("首次连接只由用户显式发现、检查、确认，刷新不重跑�
       apiPath(response.url()) === "/api/provider-setup" &&
       response.ok(),
   );
+  const documentCatalogResponse = page.waitForResponse(
+    (response) =>
+      response.request().method() === "GET" &&
+      apiPath(response.url()) === "/api/workspace/documents",
+  );
   await setupPanel.getByTestId("provider-setup-confirm").click();
   const request = await putRequest;
   await putResponse;
+  const documentCatalog = await documentCatalogResponse;
+  expect(documentCatalog.ok()).toBeTruthy();
   expect(JSON.parse(request.postData() ?? "{}")).toEqual({
     settings: {
       kind: "ollama",
