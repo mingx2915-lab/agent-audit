@@ -39,6 +39,8 @@ jobs:
             'pip-audit==2.10.1'
           cargo install cargo-audit --version 0.22.2 --locked \
             --root "$RUNNER_TEMP/agent-audit-cargo-audit"
+      - name: Fetch locked Cargo sources for offline inventory
+        run: cargo fetch --locked --manifest-path apps/desktop/src-tauri/Cargo.toml
       - name: Generate online supply-chain evidence
         run: |
           set -euo pipefail
