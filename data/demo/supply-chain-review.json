@@ -2,7 +2,7 @@
   "schemaVersion": "supply-chain-review.v1",
   "evidenceId": "windows-20260831-release-5",
   "summaryPath": "artifacts/supply-chain-evidence/windows-20260831-release-5/windows-20260831-release-5/summary.json",
-  "generatedAt": "2026-08-31T12:38:05.265472Z",
+  "generatedAt": "2026-09-27T13:08:20.473Z",
   "items": [
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0370:1.0.4",
@@ -38,13 +38,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0412:0.18.2",
@@ -59,13 +59,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0413:0.18.2",
@@ -80,13 +80,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0414:0.18.2",
@@ -101,13 +101,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0415:0.18.2",
@@ -122,13 +122,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0416:0.18.2",
@@ -143,13 +143,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0417:0.18.2",
@@ -164,13 +164,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0418:0.18.2",
@@ -185,13 +185,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0419:0.18.2",
@@ -206,13 +206,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "low",
+      "impact": "none",
       "reachability": "not_reachable",
       "owner": "desktop-build",
-      "status": "in_progress",
-      "action": "track_upstream_build_dependency_replacement",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree shows this crate as a procedural-macro/build dependency. It is not shipped as an independently callable runtime component, but its unmaintained status remains a build-maintenance risk."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0420:0.18.2",
@@ -227,13 +227,13 @@
       "evidenceSource": "cargo/vulnerabilities.json",
       "source": "RustSec advisory database",
       "observedImpact": "rustsec_warning:unmaintained",
-      "impact": "medium",
+      "impact": "none",
       "reachability": "reachable",
       "owner": "desktop-release",
-      "status": "in_progress",
-      "action": "track_tauri_gtk_stack_migration",
+      "status": "fixed",
+      "action": "record_rustsec_advisory_withdrawal",
       "dueDate": "2026-09-15",
-      "reason": "The Linux target Cargo dependency tree reaches this crate through Tauri/Wry/GTK. RustSec classifies the item as unmaintained rather than a concrete exploit; replacement depends on a compatible upstream desktop-stack migration."
+      "reason": "RustSec withdrew this GTK bindings advisory on 2026-08-14 after the gtk-rs repository was unarchived and development resumed. The dependency remains in the graph; this closure reflects the advisory withdrawal, not a code-level dependency replacement."
     },
     {
       "stableKey": "cargo:finding:RUSTSEC-2024-0429:0.18.5",

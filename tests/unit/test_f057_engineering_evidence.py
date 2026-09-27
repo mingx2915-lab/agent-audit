@@ -568,7 +568,17 @@ def test_tracked_review_register_matches_current_triage_and_manual_license_resol
 
     finding_items = [entry for entry in register.items if entry.kind == "finding"]
     assert len(finding_items) == 18
-    assert all(entry.status == "in_progress" for entry in finding_items)
+    withdrawn_advisories = {
+        f"RUSTSEC-2024-{number:04d}"
+        for number in range(411, 421)
+    }
+    withdrawn = [entry for entry in finding_items if entry.status == "fixed"]
+    active = [entry for entry in finding_items if entry.status == "in_progress"]
+    assert {entry.advisory for entry in withdrawn} == withdrawn_advisories
+    assert all(entry.action == "record_rustsec_advisory_withdrawal" for entry in withdrawn)
+    assert all("2026-08-14" in (entry.reason or "") for entry in withdrawn)
+    assert len(active) == 8
+    assert all(entry.status == "in_progress" for entry in active)
     assert all(
         entry.reachability == "reachable"
         for entry in finding_items
