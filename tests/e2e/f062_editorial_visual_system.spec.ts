@@ -148,7 +148,20 @@ test("F-062 keeps the real Critical Finding hierarchy and evidence expansion iso
   await expect(criticalFinding.locator(".finding-id-block")).toBeVisible();
   await expect(page.getByTestId("guided-result-context").locator(".guided-result-context-item")).toHaveCount(4);
   await expect(criticalFinding.locator(".finding-evidence-details")).toBeVisible();
-  await expect(criticalFinding.locator(".finding-evidence-focus")).toBeVisible();
+  const evidenceImage = criticalFinding.locator(".finding-evidence-focus");
+  await expect(evidenceImage).toBeVisible();
+  await expect
+    .poll(() =>
+      evidenceImage.evaluate((element) => {
+        const image = element as HTMLImageElement;
+        return (
+          image.currentSrc.includes("finding-evidence-focus.webp") &&
+          image.complete &&
+          image.naturalWidth > 0
+        );
+      }),
+    )
+    .toBe(true);
 
   const imagePlacement = await criticalFinding.evaluate((card) => {
     const image = card.querySelector<HTMLElement>(".finding-evidence-focus")!;
