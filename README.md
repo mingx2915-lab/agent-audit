@@ -45,13 +45,13 @@ Actor → Source → Authorization → Tool → Sink → Finding
 - 本机后台只监听 `127.0.0.1`，关闭桌面窗口会结束本次应用创建的 Sidecar，不会关闭外部 Ollama；
 - 桌面包不捆绑或自动下载大语言模型权重。首次使用 BGE Embedding 时会下载约 90 MB 的 ONNX 模型到用户缓存，离线使用须先准备缓存。连接页可发现固定 loopback 上的本机 Ollama，并动态列出实际已安装模型；用户显式选择后仍须通过四项 Provider Readiness，系统不会按模型名称跳过验证。
 
-2026-09-27 的 NSIS 安装包从当前工作树重建；新 Desktop EXE 完成两轮启动/关闭、一次受控崩溃恢复，安装器内 Sidecar 完成空缓存离线检索检查。历史安装/升级/卸载证据不替代新包验收；另一台干净 Windows 与真实安装窗口的完整视觉流程仍待复核。
+本版本的 NSIS 安装器通过 Windows 2022 发布工作流构建；安装、两轮启动/关闭、受控崩溃恢复和卸载的结果以该版本对应的 Actions 记录为准。另一台干净 Windows 的人工安装与完整窗口视觉流程仍待复核。
 
 ## Linux 桌面版
 
 本次版本提供 Debian/Ubuntu x86_64 安装包 `AgentAudit-0.1.3-linux-x64.deb`，从 [AgentAudit 最新版本下载页](https://github.com/mingx2915-lab/agent-audit/releases/latest) 获取。本次 Release 同时提供 `AgentAudit-0.1.3-linux-x64.AppImage`。桌面运行依赖兼容的 GTK/WebKitGTK 环境；密钥持久化使用 Secret Service。
 
-本轮已在 WSL2 的 Debian 12 容器中原生构建并通过 22/22 artifact 检查，包括非默认 Workspace pointer、启动/关闭、原生 GTK 文件选择和凭据存取。`.deb` 检查使用解包后的实际程序；这不代表另一台机器的 apt 安装验收。原生选择器使用隔离的非秘密连接配置夹具，未验证真实模型推理。完整安装步骤、SHA-256 与证据见交付目录；独立 Linux 桌面用户流程仍待复核。
+本版本的 Linux 工件通过 Ubuntu 24.04 发布工作流构建；AppImage 和 `.deb` 的真实 GTK 文件选择、启动与凭据证据以该版本对应的 Actions 记录为准。`.deb` 自动化检查使用解包后的实际程序；另一台机器的 apt 安装与独立 Linux 桌面用户流程仍待复核。原生选择器使用隔离的非秘密连接配置夹具，未验证真实模型推理。
 
 ## 源码开发环境要求
 

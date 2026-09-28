@@ -177,6 +177,8 @@ def _ps_json(script: str) -> tuple[Any | None, str | None]:
         )
     except (OSError, subprocess.TimeoutExpired):
         return None, "process_query_failed"
+    if completed.returncode != 0:
+        return None, "process_query_command_failed"
     output = completed.stdout.strip()
     if not output:
         return [], None
@@ -219,16 +221,27 @@ def _process_rows(payload: Any) -> list[ProcessInfo]:
 def _process(pid: int, tree: bool = False) -> tuple[list[ProcessInfo], str | None]:
     if tree:
         body = rf'''
-$ErrorActionPreference = "SilentlyContinue"
-function Find-Tree([int] $id) {{
-  $w = Get-CimInstance Win32_Process -Filter ("ProcessId = {{0}}" -f $id)
-  if ($null -eq $w) {{ return }}
-  $p = Get-Process -Id $id -ErrorAction SilentlyContinue
-  [pscustomobject]@{{ ProcessId=[int]$w.ProcessId; ParentProcessId=[int]$w.ParentProcessId; ExecutablePath=[string]$w.ExecutablePath; CreationDate=[string]$w.CreationDate; WorkingSetBytes=if($null -eq $p){{$null}}else{{[int64]$p.WorkingSet64}} }}
-  $children = Get-CimInstance Win32_Process -Filter ("ParentProcessId = {{0}}" -f $id)
-  foreach ($child in $children) {{ Find-Tree ([int]$child.ProcessId) }}
+$ErrorActionPreference = "Stop"
+$snapshot = @(Get-CimInstance Win32_Process)
+$byPid = @{{}}
+$children = @{{}}
+foreach ($w in $snapshot) {{
+  $byPid[[int]$w.ProcessId] = $w
+  $parent = [int]$w.ParentProcessId
+  if (-not $children.ContainsKey($parent)) {{ $children[$parent] = [System.Collections.Generic.List[int]]::new() }}
+  $children[$parent].Add([int]$w.ProcessId)
 }}
-$rows = @(Find-Tree {pid})
+$rows = @()
+$pending = [System.Collections.Generic.Queue[int]]::new()
+$pending.Enqueue({pid})
+while ($pending.Count -gt 0) {{
+  $id = $pending.Dequeue()
+  if (-not $byPid.ContainsKey($id)) {{ continue }}
+  $w = $byPid[$id]
+  $p = Get-Process -Id $id -ErrorAction SilentlyContinue
+  $rows += [pscustomobject]@{{ ProcessId=[int]$w.ProcessId; ParentProcessId=[int]$w.ParentProcessId; ExecutablePath=[string]$w.ExecutablePath; CreationDate=[string]$w.CreationDate; WorkingSetBytes=if($null -eq $p){{$null}}else{{[int64]$p.WorkingSet64}} }}
+  if ($children.ContainsKey($id)) {{ foreach ($child in $children[$id]) {{ $pending.Enqueue($child) }} }}
+}}
 if ($rows.Count -eq 0) {{ "[]" }} else {{ $rows | ConvertTo-Json -Compress }}
 '''
     else:
@@ -863,7 +876,7 @@ def _orphans(
         for item in known:
             rows, query_error = _process(item.pid)
             error = error or query_error
-            if query_error in {"powershell_unavailable", "process_query_failed", "process_query_invalid_json"}:
+            if query_error:
                 return current_orphans, error, _elapsed(started), polls
             if rows and _same_identity(rows[0], item):
                 current_orphans.append(rows[0].public(artifact))
