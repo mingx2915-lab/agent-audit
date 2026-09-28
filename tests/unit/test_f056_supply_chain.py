@@ -22,7 +22,9 @@ from agent_audit_api.supply_chain import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PRODUCT_VERSION = "0.1.2"
+PRODUCT_VERSION = tomllib.loads(
+    (ROOT / "apps" / "api" / "pyproject.toml").read_text(encoding="utf-8")
+)["project"]["version"]
 
 
 def _runner(command: list[str], _cwd: Path, environment: dict[str, str]):
