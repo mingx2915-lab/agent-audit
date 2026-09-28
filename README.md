@@ -35,7 +35,7 @@ Actor → Source → Authorization → Tool → Sink → Finding
 
 ## Windows 桌面版
 
-普通用户使用桌面安装包，不需要安装 Python、Node，也不需要打开浏览器或输入本机 URL。安装包请从 [AgentAudit 最新版本下载页](https://github.com/mingx2915-lab/agent-audit/releases/latest) 获取；Windows x64 安装器为该页中的 `AgentAudit-0.1.2-windows-x64-setup.exe`。
+普通用户使用桌面安装包，不需要安装 Python、Node，也不需要打开浏览器或输入本机 URL。安装包请从 [AgentAudit 最新版本下载页](https://github.com/mingx2915-lab/agent-audit/releases/latest) 获取；Windows x64 安装器为该页中的 `AgentAudit-0.1.3-windows-x64-setup.exe`。
 
 安装后启动“知盾 AgentAudit”。应用文件、AI Runtime 和企业 Audit Workspace 相互分离：
 
@@ -49,7 +49,7 @@ Actor → Source → Authorization → Tool → Sink → Finding
 
 ## Linux 桌面版
 
-本次版本提供 Debian/Ubuntu x86_64 安装包 `AgentAudit-0.1.2-2-linux-x64.deb`，从 [AgentAudit 最新版本下载页](https://github.com/mingx2915-lab/agent-audit/releases/latest) 获取。当前发布候选不附 AppImage，因为 F-066 权限修订后没有重建 AppImage。桌面运行依赖兼容的 GTK/WebKitGTK 环境；密钥持久化使用 Secret Service。
+本次版本提供 Debian/Ubuntu x86_64 安装包 `AgentAudit-0.1.3-linux-x64.deb`，从 [AgentAudit 最新版本下载页](https://github.com/mingx2915-lab/agent-audit/releases/latest) 获取。本次 Release 同时提供 `AgentAudit-0.1.3-linux-x64.AppImage`。桌面运行依赖兼容的 GTK/WebKitGTK 环境；密钥持久化使用 Secret Service。
 
 本轮已在 WSL2 的 Debian 12 容器中原生构建并通过 22/22 artifact 检查，包括非默认 Workspace pointer、启动/关闭、原生 GTK 文件选择和凭据存取。`.deb` 检查使用解包后的实际程序；这不代表另一台机器的 apt 安装验收。原生选择器使用隔离的非秘密连接配置夹具，未验证真实模型推理。完整安装步骤、SHA-256 与证据见交付目录；独立 Linux 桌面用户流程仍待复核。
 
