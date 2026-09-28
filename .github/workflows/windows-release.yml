@@ -3,7 +3,7 @@ name: Windows release evidence
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 'codex/v*-release-prep']
 
 permissions:
   contents: read
