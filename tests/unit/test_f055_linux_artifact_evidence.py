@@ -25,6 +25,24 @@ def _module():
     return module
 
 
+def _picker_module():
+    spec = importlib.util.spec_from_file_location("f055_linux_native_picker", PICKER_SCRIPT)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_webdriver_failure_route_redacts_session_and_element_ids() -> None:
+    module = _picker_module()
+
+    route = module.webdriver_route_label(
+        "POST", "/session/transient-session/element/transient-element/click"
+    )
+
+    assert route == "POST /session/:session/element/:element/click"
+
+
 def test_evidence_status_never_counts_not_verified_as_passed() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
     assert 'STATUS_VALUES = {"passed", "failed", "not_verified"}' in source
@@ -137,6 +155,9 @@ def test_linux_native_picker_uses_real_tauri_webdriver_and_scoped_gtk_dialog() -
         "threading.Thread",
         "click_thread",
         "preview_started_on_selection",
+        "webdriver_route_label",
+        "driverLogTail",
+        "stderr=subprocess.STDOUT",
     ):
         assert required in source
     assert "__AGENT_AUDIT_DOCUMENT_PICKER__" not in source

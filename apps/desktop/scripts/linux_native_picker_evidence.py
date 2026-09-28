@@ -120,6 +120,15 @@ class WebDriverError(RuntimeError):
     pass
 
 
+def webdriver_route_label(method: str, path: str) -> str:
+    """Describe a WebDriver route without exposing transient element/session IDs."""
+    parts = path.split("/")
+    for index, part in enumerate(parts[:-1]):
+        if part in {"session", "element"} and parts[index + 1]:
+            parts[index + 1] = f":{part}"
+    return f"{method.upper()} {'/'.join(parts)}"
+
+
 class WebDriverClient:
     def __init__(self, base_url: str, timeout: float = 15.0) -> None:
         self.base_url = base_url.rstrip("/")
@@ -161,7 +170,10 @@ class WebDriverClient:
                 pass
             raise WebDriverError(detail) from exc
         except (OSError, urllib.error.URLError) as exc:
-            raise WebDriverError(f"webdriver request unavailable: {type(exc).__name__}") from exc
+            route = webdriver_route_label(method, path)
+            raise WebDriverError(
+                f"webdriver request unavailable: {type(exc).__name__} at {route}"
+            ) from exc
         try:
             value = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -682,18 +694,22 @@ def run_artifact_picker(
         encoding="utf-8",
     )
     env["TAURI_WEBVIEW_AUTOMATION"] = "true"
+    runtime_root.mkdir(parents=True, exist_ok=True)
+    driver_log_path = runtime_root / "tauri-driver.log"
+    driver_log = driver_log_path.open("w", encoding="utf-8")
     try:
         driver_process = subprocess.Popen(
             [driver_bin, "--port", "4444", "--native-port", "4445"],
             env=env,
             stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=driver_log,
+            stderr=subprocess.STDOUT,
             text=True,
             start_new_session=True,
         )
         group_id = os.getpgid(driver_process.pid)
     except OSError as exc:
+        driver_log.close()
         if "driver_process" in locals():
             driver_process.kill()
             driver_process.wait(timeout=5)
@@ -827,6 +843,14 @@ def run_artifact_picker(
     finally:
         driver.close()
         stop_process_group(driver_process, group_id)
+        driver_log.close()
+        if "failureStage" in observation and driver_log_path.is_file():
+            lines = driver_log_path.read_text(encoding="utf-8", errors="replace").splitlines()
+            observation["driverLogTail"] = [
+                line.replace(str(runtime_root), "<runtime>")
+                .replace(str(application), "<application>")[:400]
+                for line in lines[-40:]
+            ]
 
 
 def main() -> int:
