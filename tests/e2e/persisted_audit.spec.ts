@@ -620,11 +620,18 @@ test("guided source→sink Scan and Replay use real evidence and persist without
       apiPath(response.url()) === `/api/scans/${scan.id}/replays` &&
       response.ok(),
   );
+  const refreshedHistoryResponse = page.waitForResponse(
+    (response) =>
+      response.request().method() === "GET" &&
+      apiPath(response.url()) === "/api/scans" &&
+      response.ok(),
+  );
   await page.getByTestId("start-persisted-replay").click();
   const persistedReplayPayload = (await (await persistedReplayResponse).json()) as {
     id: string;
     replay: Replay;
   };
+  await refreshedHistoryResponse;
   expect(persistedReplayPayload.id).toEqual(expect.any(String));
   expect(persistedReplayPayload.replay.id).toEqual(expect.any(String));
   expect(persistedReplayPayload.replay.before.evaluation.status).toBe("failed");
