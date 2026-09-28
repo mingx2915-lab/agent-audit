@@ -217,6 +217,11 @@ test("F-062 keeps Provider Readiness artwork local to its real blocked state", a
     "src",
     /provider-readiness-blocked\.webp/,
   );
+  await expect
+    .poll(() => readinessVisual.locator("img").evaluate((image: HTMLImageElement) =>
+      image.complete && image.naturalWidth > 0,
+    ))
+    .toBe(true);
   await expect(readinessVisual).toContainText("尚未");
 
   const imagePlacement = await readinessVisual.evaluate((visual) => {

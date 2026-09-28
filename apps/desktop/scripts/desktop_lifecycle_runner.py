@@ -32,7 +32,7 @@ HISTORY_DB = "agent_audit.sqlite3"
 STATUS_FILE = "sidecar.status.json"
 MAX_ITERATIONS = 100
 HTTP_BODY_LIMIT = 64 * 1024
-PROCESS_QUERY_TIMEOUT = 10.0
+PROCESS_QUERY_TIMEOUT = 30.0
 
 
 class RunnerError(RuntimeError):
@@ -175,7 +175,9 @@ def _ps_json(script: str) -> tuple[Any | None, str | None]:
             check=False,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         )
-    except (OSError, subprocess.TimeoutExpired):
+    except subprocess.TimeoutExpired:
+        return None, "process_query_timeout"
+    except OSError:
         return None, "process_query_failed"
     if completed.returncode != 0:
         return None, "process_query_command_failed"

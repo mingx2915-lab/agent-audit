@@ -534,7 +534,7 @@ def choose_path_in_dialog(window_id: str, path: Path) -> None:
     # titled chooser so no unrelated application can receive the input.
     commands = [
         [xdotool, "key", "--clearmodifiers", "ctrl+l"],
-        [xdotool, "type", "--clearmodifiers", "--delay", "1", str(path)],
+        [xdotool, "type", "--clearmodifiers", "--delay", "12", str(path)],
         [xdotool, "key", "--clearmodifiers", "Return"],
         # GTK's location entry first resolves the typed path; the native
         # chooser's Open action is then activated through its keyboard
@@ -724,16 +724,22 @@ def run_artifact_picker(
         },
     }
     try:
+        stage = "driver_ready"
         if not wait_for_port("http://127.0.0.1:4444/status", timeout=30):
             return check(f"{label}_native_file_selection", "failed", "tauri_driver_unavailable"), observation
+        stage = "create_session"
         driver.create_session(application, application_args)
+        stage = "activate_window"
         activate_app_window()
         observation["appWindowActivated"] = True
+        stage = "select_display_scale"
         observation["displayScale"] = select_standard_display_scale(driver)
+        stage = "choose_onboarding_path"
         path_selector = "[data-testid='onboarding-custom']"
         wait_for_element(driver, path_selector)
         driver.scroll_into_view(path_selector)
         driver.click(wait_for_element(driver, path_selector))
+        stage = "open_document_import"
         open_element = wait_for_element(driver, "[data-testid='document-import-open']")
         initial_actions = action_counts(driver.resource_urls())
         observation["initialActions"] = initial_actions
@@ -746,6 +752,7 @@ def run_artifact_picker(
         driver.scroll_into_view("[data-testid='document-import-open']")
         open_element = wait_for_element(driver, "[data-testid='document-import-open']")
         driver.click(open_element)
+        stage = "open_native_file_chooser"
         files_element = wait_for_element(driver, "[data-testid='document-import-files']")
         driver.scroll_into_view("[data-testid='document-import-files']")
         files_element = wait_for_element(driver, "[data-testid='document-import-files']")
@@ -785,7 +792,9 @@ def run_artifact_picker(
             except WebDriverError:
                 observation["dialogDiagnostic"] = {"state": "webdriver_unavailable"}
             raise
+        stage = "select_native_file"
         choose_path_in_dialog(window_id, synthetic_file)
+        stage = "verify_selected_file"
         click_thread.join(timeout=15)
         if not click_result["done"]:
             raise WebDriverError("webdriver_file_click_timeout")
@@ -811,6 +820,9 @@ def run_artifact_picker(
         observation["returnedToWebView"] = True
         return check(f"{label}_native_file_selection", "passed"), observation
     except WebDriverError as exc:
+        observation["failureStage"] = stage
+        observation["driverExitCode"] = driver_process.poll()
+        observation["driverGroupMemberCount"] = len(process_group_members(group_id))
         return check(f"{label}_native_file_selection", "failed", str(exc)), observation
     finally:
         driver.close()
