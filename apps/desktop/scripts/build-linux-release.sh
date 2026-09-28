@@ -84,8 +84,8 @@ file "${OUTPUT_DIR}/agent-audit-sidecar" "${DEB_FILES[0]}" "${APPIMAGE_FILES[0]}
 # instead of leaving a falsely complete evidence summary.
 DEB_PICKER_ROOT="${STAGING}/deb-picker-root"
 dpkg-deb -x "${DEB_FILES[0]}" "${DEB_PICKER_ROOT}"
-PICKER_EVIDENCE="${STAGING}/native-picker-evidence.json"
-xvfb-run -a bash -c '
+PICKER_EVIDENCE="${OUTPUT_DIR}/native-picker-evidence.json"
+if ! xvfb-run -a bash -c '
   set -euo pipefail
   wm_log="$(mktemp)"
   openbox --sm-disable >"${wm_log}" 2>&1 &
@@ -101,7 +101,12 @@ xvfb-run -a bash -c '
   --appimage "${APPIMAGE_FILES[0]}" \
   --deb "${DEB_FILES[0]}" \
   --deb-desktop "${DEB_PICKER_ROOT}/usr/bin/agent-audit-desktop" \
-  --output "${PICKER_EVIDENCE}"
+  --output "${PICKER_EVIDENCE}"; then
+  if [[ -f "${PICKER_EVIDENCE}" ]]; then
+    cat -- "${PICKER_EVIDENCE}"
+  fi
+  exit 1
+fi
 
 python3 apps/desktop/scripts/linux_artifact_evidence.py \
   --appimage "${APPIMAGE_FILES[0]}" \

@@ -560,8 +560,21 @@ test("guided source→sink Scan and Replay use real evidence and persist without
   await expect(comparison).toBeVisible();
   const replayVisual = comparison.getByTestId("guided-replay-state-visual");
   await expect(replayVisual).toHaveClass(/is-passed/);
-  await expect(comparison.getByTestId("guided-replay-before-visual")).toHaveAttribute("alt", "");
-  await expect(comparison.getByTestId("guided-replay-after-visual")).toHaveAttribute("alt", "");
+  const replayBeforeVisual = comparison.getByTestId("guided-replay-before-visual");
+  const replayAfterVisual = comparison.getByTestId("guided-replay-after-visual");
+  await expect(replayBeforeVisual).toHaveAttribute("alt", "");
+  await expect(replayAfterVisual).toHaveAttribute("alt", "");
+  await expect
+    .poll(() =>
+      Promise.all(
+        [replayBeforeVisual, replayAfterVisual].map((image) =>
+          image.evaluate(
+            (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+          ),
+        ),
+      ),
+    )
+    .toEqual([true, true]);
   await expect(comparison.getByTestId("guided-replay-before")).toContainText(/failed/i);
   await expect(comparison.getByTestId("guided-replay-after")).toContainText(/passed/i);
   await expect(comparison.getByTestId("guided-replay-after")).toContainText(/blocked/i);
