@@ -185,6 +185,11 @@ def _status_diagnostic(
                 f"{label}地址没有提供模型列表（HTTP 404）。"
                 "请确认 Ollama 正在 127.0.0.1:11434 运行。"
             )
+        if stage in {"readiness", "execution"}:
+            return (
+                f"{label}未找到所选模型或对应调用接口（HTTP 404）。"
+                "请核对模型名称、服务地址和兼容协议后重新检查。"
+            )
         return (
             f"{label}地址没有提供{phase}所需的接口（HTTP 404）。"
             "请确认填写的是服务地址，再重新检查。"

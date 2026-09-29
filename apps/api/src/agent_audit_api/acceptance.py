@@ -397,6 +397,7 @@ class AcceptanceRunner:
             cases=cases,
             profiles=profiles,
             plans=plans,
+            demo_data=self._demo_data,
         )
         benchmark = await benchmark_runtime.run()
         ci_gate = build_ci_gate_result(
